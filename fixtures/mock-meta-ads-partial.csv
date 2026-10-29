@@ -1,0 +1,9 @@
+﻿data_source,date,campaign_id,campaign_name,spend,impressions,clicks,website_confirmed_registrations,meta_attributed_registrations,currency,timezone,attribution_setting,retrieved_at,is_complete
+mock,2026-10-27,mock_prospecting,จำลอง · เข้าถึงกลุ่มใหม่,1474.88,19318,338,10,10,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-27,mock_returning,จำลอง · ผู้เยี่ยมชมเดิม,873.95,9201,235,9,7,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-27,mock_community,จำลอง · สร้างการมีส่วนร่วม,697.87,6917,183,3,7,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-27,mock_creative_test,จำลอง · ทดสอบสื่อโฆษณา,368.01,3952,51,1,0,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-28,mock_prospecting,จำลอง · เข้าถึงกลุ่มใหม่,1219.48,13058,266,8,5,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,false
+mock,2026-10-28,mock_returning,จำลอง · ผู้เยี่ยมชมเดิม,890.82,10953,267,10,19,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,false
+mock,2026-10-28,mock_community,จำลอง · สร้างการมีส่วนร่วม,512.49,5544,167,2,,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,false
+mock,2026-10-28,mock_creative_test,จำลอง · ทดสอบสื่อโฆษณา,432.52,4357,56,,8,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,false

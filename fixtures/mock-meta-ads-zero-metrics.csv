@@ -1,0 +1,5 @@
+﻿data_source,date,campaign_id,campaign_name,spend,impressions,clicks,website_confirmed_registrations,meta_attributed_registrations,currency,timezone,attribution_setting,retrieved_at,is_complete
+mock,2026-10-01,mock_prospecting,จำลอง · เข้าถึงกลุ่มใหม่,0.00,0,0,0,0,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-01,mock_returning,จำลอง · ผู้เยี่ยมชมเดิม,0.00,0,0,0,0,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-01,mock_community,จำลอง · สร้างการมีส่วนร่วม,0.00,0,0,0,0,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
+mock,2026-10-01,mock_creative_test,จำลอง · ทดสอบสื่อโฆษณา,0.00,0,0,0,0,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-29T09:00:00+07:00,true
