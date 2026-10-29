@@ -1,0 +1,47 @@
+# คู่มือความปลอดภัย
+
+## ขอบเขตเวอร์ชันแรก
+
+Local development / CSV-only ไม่มี authentication, authorization หรือ tenant
+isolation อย่าเปิดให้สาธารณะและอย่าใส่ข้อมูลส่วนบุคคล ฐานข้อมูล Docker bind
+เฉพาะ 127.0.0.1 ค่า password ใน compose เป็นค่า local ตัวอย่าง ไม่ใช่ production secret
+
+## Secrets
+
+- ไม่มี token field ฝั่ง browser; ห้ามใช้ `NEXT_PUBLIC_META_ACCESS_TOKEN`
+- `.env*` ที่มี secret ต้องไม่อยู่ใน Git; `.env.example` เท่านั้นที่เผยแพร่ได้
+- ใช้ server environment หรือ secret manager เมื่อพัฒนา connector จริง
+- ห้ามใส่ token ใน URL/query string, exception, access log, telemetry หรือ CSV
+- ปัจจุบันไม่มี network request ไป Meta และ `META_CONNECTOR_ENABLED` ไม่สามารถ
+  เปิด adapter ได้; เป็นสถานะปิดถาวรของรุ่นนี้ ไม่อ้างว่า OAuth ทำงานแล้ว
+
+## CSV และฐานข้อมูล
+
+จำกัด 2 MB / 20,000 แถว อ่านแบบ UTF-8 และ allowlist header ตรวจชนิดข้อมูล
+ค่าติดลบ ค่าที่ไม่ใช่จำนวน finite วันที่ซ้ำ เขตเวลา สกุลเงิน และ attribution
+ก่อนเริ่ม transaction ข้อผิดพลาดระบุชื่อคอลัมน์/แถว ไม่คืนค่าข้อมูลดิบ
+Pydantic ไม่รับคอลัมน์นอก schema ไม่มีการ execute เนื้อหา CSV
+SQLAlchemy ใช้ parameterized statements; เก็บชุดข้อมูลด้วย unique content hash
+ผลนำเข้าเก็บใน PostgreSQL จนกว่าจะลบโดยผู้ดูแล ไม่มีระบบ retention อัตโนมัติ
+รายงานดาวน์โหลดเป็น plain text ไม่ส่งออกสูตร spreadsheet
+
+## ก่อน deployment
+
+ต้องเพิ่ม login, ownership/tenant authorization, CSRF/origin protection สำหรับ
+cookie sessions, TLS, rate limiting, upload limits ที่ reverse proxy, backup,
+retention/deletion policy และ secrets rotation ก่อนเปิดบริการสาธารณะ
+dataset ID ไม่ใช่ credential และห้ามใช้แทน access control
+กำหนด allowed origins/hosts เฉพาะ deployment; อย่าเปิด debug logs
+อย่าส่ง traceback, DSN หรือ upstream error body กลับ client
+ทดสอบ dependency updates และตรึง lockfile เมื่อติดตั้ง
+
+## เมื่อทำ Meta connector จริง
+
+ใช้ `ads_read` ตามสิทธิ์อนุมัติเท่านั้น จำกัดปลายทาง Graph API ฝั่ง server
+และสร้าง URL จาก host/version/account ที่ตรวจสอบแล้ว ไม่ follow `paging.next`
+แบบไม่ตรวจ origin เพราะอาจมี token หรือปลายทางไม่พึงประสงค์
+ใช้ cursor ที่ validate แล้ว มี page cap, loop detection และ retry cap
+ตรวจ Graph error ภายใน HTTP 200 ด้วย; ตรวจ usage headers และ Retry-After
+ทำ bounded exponential backoff สำหรับ rate limit; ไม่ retry authorization
+errors แบบไม่สิ้นสุด แสดง failed/partial/freshness โดยไม่อ้างว่าเป็นชุดครบ
+ไม่มี mutation endpoints และห้ามเพิ่ม `ads_management` โดยไม่จำเป็น

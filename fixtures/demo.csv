@@ -1,0 +1,43 @@
+data_source,date,campaign_id,campaign_name,spend,impressions,clicks,website_confirmed_registrations,meta_attributed_registrations,currency,timezone,attribution_setting,retrieved_at,is_complete
+mock,2026-10-12,mock_1,Discover · New audience,699.38,97313,2094,55,64,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-12,mock_2,Reconnect · Returning visitors,1191.39,170696,3360,91,106,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-12,mock_3,Community · Engagement,1009.8,129240,2685,49,65,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-13,mock_1,Discover · New audience,736.64,90713,1146,42,55,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-13,mock_2,Reconnect · Returning visitors,1251.71,170928,2138,50,62,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-13,mock_3,Community · Engagement,1092.99,162110,2841,57,76,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-14,mock_1,Discover · New audience,709.61,104651,1967,55,66,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-14,mock_2,Reconnect · Returning visitors,1086.41,132044,1658,56,65,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-14,mock_3,Community · Engagement,1502.62,183769,4875,170,225,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-15,mock_1,Discover · New audience,963.99,130453,2993,58,72,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-15,mock_2,Reconnect · Returning visitors,1272.52,155295,4013,139,169,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-15,mock_3,Community · Engagement,1280.69,167509,2979,109,132,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-16,mock_1,Discover · New audience,696.44,82363,1875,69,86,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-16,mock_2,Reconnect · Returning visitors,1127.56,151391,3515,75,96,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-16,mock_3,Community · Engagement,1418.82,194082,2854,58,69,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-17,mock_1,Discover · New audience,1061.38,134934,2828,65,73,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-17,mock_2,Reconnect · Returning visitors,931.32,133625,3160,77,100,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-17,mock_3,Community · Engagement,1516.45,222090,5857,147,205,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-18,mock_1,Discover · New audience,1092.62,148233,3742,100,121,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-18,mock_2,Reconnect · Returning visitors,1039.95,151484,2186,40,53,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-18,mock_3,Community · Engagement,1603.07,211462,5192,93,109,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-19,mock_1,Discover · New audience,838.14,108693,1582,29,34,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-19,mock_2,Reconnect · Returning visitors,1397.09,208754,4840,128,150,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-19,mock_3,Community · Engagement,1747.2,233071,5344,93,108,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-20,mock_1,Discover · New audience,1077.39,153886,3881,112,137,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-20,mock_2,Reconnect · Returning visitors,1250.8,181024,3008,83,98,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-20,mock_3,Community · Engagement,1651.48,190511,4244,153,169,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-21,mock_1,Discover · New audience,992.03,136438,3380,96,113,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-21,mock_2,Reconnect · Returning visitors,1175.94,174691,4469,87,98,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-21,mock_3,Community · Engagement,1233.19,142909,2672,52,70,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-22,mock_1,Discover · New audience,1033.58,123438,2478,58,72,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-22,mock_2,Reconnect · Returning visitors,1092.43,131979,1947,47,61,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-22,mock_3,Community · Engagement,1557.45,181624,4116,141,187,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-23,mock_1,Discover · New audience,1107.74,127693,2420,44,58,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-23,mock_2,Reconnect · Returning visitors,1084.49,151722,2396,74,88,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-23,mock_3,Community · Engagement,1236.05,158968,2645,92,109,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-24,mock_1,Discover · New audience,998.49,134023,3514,66,84,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-24,mock_2,Reconnect · Returning visitors,1288.42,181293,4805,111,145,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-24,mock_3,Community · Engagement,1588.24,213814,2770,92,128,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-25,mock_1,Discover · New audience,947.57,119520,3214,61,68,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-25,mock_2,Reconnect · Returning visitors,1058.76,151933,3555,92,118,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
+mock,2026-10-25,mock_3,Community · Engagement,1257.71,173013,3224,88,107,THB,Asia/Bangkok,7-day click / 1-day view,2026-10-26T09:00:00+07:00,true
