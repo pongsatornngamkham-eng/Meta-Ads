@@ -46,3 +46,20 @@ def test_postgres_import_atomic_idempotent_roundtrip():
     assert client.post('/api/imports',files={'file':('bad.csv',SAMPLE+b'\nBAD')}).status_code==422
     with Session(storage.engine()) as s: after=s.scalar(select(func.count()).select_from(storage.Dataset))
     assert after==before+int(a.json()['created'])
+
+
+def test_demo_without_system_timezone_database():
+    # Windows normally has no IANA system database. Run a fresh interpreter so
+    # cached ZoneInfo objects from other tests cannot hide the missing dependency.
+    import subprocess
+    import sys
+    result = subprocess.run(
+        [sys.executable, '-c',
+         "from fastapi.testclient import TestClient; from app.main import app; "
+         "r=TestClient(app,raise_server_exceptions=False).get('/api/datasets/demo'); "
+         "assert r.status_code==200, r.status_code; assert r.json()['row_count']==42"],
+        cwd=Path(__file__).parents[1],
+        env={**os.environ, 'PYTHONTZPATH': ''},
+        capture_output=True, text=True, timeout=30,
+    )
+    assert result.returncode == 0, result.stderr

@@ -3,11 +3,12 @@ Use the environment's installed Python Playwright and Chromium.
 """
 import csv
 import io
+import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-ARTIFACTS = ROOT / 'artifacts'
+ARTIFACTS = Path(os.environ.get('SCREENSHOT_DIR', str(ROOT / 'artifacts')))
 ARTIFACTS.mkdir(exist_ok=True)
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path='/usr/bin/chromium', headless=True, args=['--no-sandbox'])
@@ -32,19 +33,22 @@ with sync_playwright() as p:
         page.get_by_role('button',name='ส่งออกรายงาน',exact=True).click()
     report = Path(downloaded.value.path()).read_text(encoding='utf-8-sig')
     assert 'ข้อมูลจำลอง (MOCK)' in report and 'Asia/Bangkok' in report and 'เว็บไซต์' in report
-    page.get_by_role('button',name='นำเข้า CSV',exact=True).click()
-    page.locator('input[type=file]').set_input_files({'name':'bad.csv','mimeType':'text/csv','buffer':b'wrong,headers\n1,2'})
+    def select_csv(file, reopen=True):
+        with page.expect_file_chooser() as chooser:
+            page.get_by_role('button', name='นำเข้า CSV' if reopen else 'เลือกไฟล์ CSV', exact=True).click()
+        chooser.value.set_files(file)
+        expect(page.get_by_role('button', name='นำเข้าไฟล์', exact=True)).to_be_enabled()
+        page.get_by_role('button', name='นำเข้าไฟล์', exact=True).click()
+    select_csv({'name':'bad.csv','mimeType':'text/csv','buffer':b'wrong,headers\n1,2'})
     expect(page.get_by_role('dialog').get_by_role('alert')).to_contain_text('หัวตารางไม่ถูกต้อง')
-    # Sample remains explicitly mock after upload.
-    page.locator('input[type=file]').set_input_files(str(ROOT/'fixtures/demo.csv'))
+    # Retry the same dialog with a valid sample; source must remain mock.
+    select_csv(str(ROOT/'fixtures/demo.csv'), reopen=False)
     expect(page.get_by_role('dialog')).not_to_be_visible()
     expect(page.get_by_text('คุณกำลังดูข้อมูลจำลอง',exact=True)).to_be_visible()
-    # A separately labelled CSV dataset can be imported and displayed.
     rows=list(csv.DictReader(io.StringIO((ROOT/'fixtures/demo.csv').read_text())))
     out=io.StringIO(); w=csv.DictWriter(out,rows[0].keys()); w.writeheader()
     w.writerows(dict(r,data_source='csv') for r in rows)
-    page.get_by_role('button',name='นำเข้า CSV',exact=True).click()
-    page.locator('input[type=file]').set_input_files({'name':'csv-test.csv','mimeType':'text/csv','buffer':out.getvalue().encode()})
+    select_csv({'name':'csv-test.csv','mimeType':'text/csv','buffer':out.getvalue().encode()})
     expect(page.get_by_role('dialog')).not_to_be_visible()
     expect(page.get_by_text('กำลังแสดงข้อมูลจากไฟล์ CSV',exact=True)).to_be_visible()
     expect(page.get_by_text('42 แถว · CSV นำเข้า',exact=True)).to_be_visible()
