@@ -12,3 +12,5 @@ artifacts/*.json
 # Local credentials and atomic setup temporary files
 .env.*
 !.env.example
+
+secrets/

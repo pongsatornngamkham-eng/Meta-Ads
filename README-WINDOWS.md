@@ -10,13 +10,29 @@
 - Python 3.12 ขึ้นไป: https://www.python.org/downloads/windows/
   ติ๊ก Add Python to PATH ตอนติดตั้ง
 - Docker Desktop: https://www.docker.com/products/docker-desktop/
-  จำเป็นสำหรับนำเข้า CSV ลง PostgreSQL แต่ยังไม่ต้องเปิดถ้าจะดู demo อย่างเดียว
+  จำเป็นสำหรับ PostgreSQL ที่เก็บ sessions และข้อมูลนำเข้า
 
 เปิด PowerShell ใหม่หลังติดตั้ง แล้วติดตั้ง uv:
 
 ```powershell
 py -m pip install uv
 ```
+
+## 0. ตั้ง login และเริ่มฐานข้อมูล
+
+รุ่นใหม่ป้องกันข้อมูลด้วย login ก่อนเริ่ม backend ให้เปิด Docker Desktop
+แล้วรันที่โฟลเดอร์โปรเจกต์ โดยเก็บ .env เดิมไว้:
+
+```powershell
+cd C:\Projects\Meta-Ads
+docker compose up -d db
+py .\setup_dashboard.py
+```
+
+ตั้งรหัสผ่านอย่างน้อย 12 ตัวอักษร และใช้ URL `http://localhost:3000` หากเปิดในเครื่อง
+เครื่องมือจะสร้างค่าใหม่ใน .env โดยรักษาค่า Meta/Telegram เดิม
+ถ้ายังไม่ตั้ง login ระบบจะปิดการเข้าถึงข้อมูลไว้
+สำหรับ Dashboard ออนไลน์ให้ใช้ [คู่มือโฮสต์และเชื่อม Make](docs/ONLINE_DASHBOARD.md) แทนการเปิดพอร์ตเครื่องตัวเอง
 
 ## 1. เริ่ม backend
 
@@ -41,8 +57,8 @@ npm.cmd run dev
 ```
 
 เมื่อพร้อมแล้วเปิด browser บนเครื่อง Windows ไปที่ http://localhost:3000
-จะเห็นข้อมูลจำลองที่ติดป้ายชัดเจน ไม่มีการเชื่อม Meta API
-ไม่มี access token ที่ต้องกรอก
+เข้าสู่ระบบด้วยบัญชีที่ตั้งไว้ แล้วเลือกแท็บข้อมูลจำลอง หรือรอข้อมูล Make
+ไม่มี Meta access token ที่ต้องกรอกในหน้าเว็บ
 
 ## 3. เปิด PostgreSQL เมื่อต้องการนำเข้า CSV
 
@@ -108,8 +124,8 @@ py .\setup_telegram.py
 - นำเข้าแล้วแจ้งฐานข้อมูลยังไม่พร้อม: เปิด Docker Desktop และทำขั้นตอนที่ 3
 - พอร์ต 3000 ถูกใช้: Next.js อาจเลือกพอร์ตอื่น ให้ดูหมายเลขพอร์ตใน terminal
 
-รุ่นนี้สำหรับ local development ยังไม่มี login หรือการแยกข้อมูลหลายผู้ใช้
-ห้ามเปิดเป็นบริการสาธารณะ และอย่าใส่ข้อมูลส่วนบุคคลหรือ token ใน CSV
+รุ่นนี้มี login เจ้าของคนเดียว ยังไม่รองรับหลายผู้ใช้/หลายองค์กร
+การเปิดออนไลน์ต้องตั้ง HTTPS/secrets ตามคู่มือออนไลน์ อย่าใส่ข้อมูลส่วนบุคคลหรือ token ใน CSV
 การตรวจนโยบาย/กฎหมายและการเชื่อม Meta จริงยังไม่ครบ ดู docs/POLICY_REVIEW.md
 
 ZIP ไม่รวม node_modules, Python virtual environment, .git, .env จริง หรือฐานข้อมูล

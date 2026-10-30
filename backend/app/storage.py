@@ -17,10 +17,16 @@ _engine = None
 def engine():
     global _engine
     if _engine is None:
-        _engine = create_engine(os.environ.get('DATABASE_URL', 'postgresql+psycopg://dashboard:dashboard_local@127.0.0.1:5432/meta_ads'), pool_pre_ping=True, connect_args={'connect_timeout': 3})
+        from .server_config import value
+        url = value('DATABASE_URL', 'postgresql+psycopg://dashboard:dashboard_local@127.0.0.1:5432/meta_ads')
+        if url.startswith('postgres://'): url = url.replace('postgres://', 'postgresql+psycopg://', 1)
+        elif url.startswith('postgresql://'): url = url.replace('postgresql://', 'postgresql+psycopg://', 1)
+        _engine = create_engine(url, pool_pre_ping=True, connect_args={'connect_timeout': 3})
     return _engine
 
-def initialize(): Base.metadata.create_all(engine())
+def initialize():
+    from . import auth, live_store, report_store  # register additive tables
+    Base.metadata.create_all(engine())
 
 def save(rows, digest):
     from sqlalchemy.exc import IntegrityError

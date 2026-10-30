@@ -7,6 +7,14 @@ import pytest
 from sqlalchemy import select, func
 
 client=TestClient(app)
+@pytest.fixture(autouse=True)
+def legacy_data_access():
+    # Existing CSV tests cover data behavior; dedicated online tests exercise auth.
+    from app.auth import require_owner
+    app.dependency_overrides[require_owner] = lambda: 'test-owner'
+    yield
+    app.dependency_overrides.clear()
+
 SAMPLE=(Path(__file__).parents[2]/'fixtures/demo.csv').read_bytes()
 
 def test_demo_and_filters():
@@ -55,7 +63,8 @@ def test_demo_without_system_timezone_database():
     import sys
     result = subprocess.run(
         [sys.executable, '-c',
-         "from fastapi.testclient import TestClient; from app.main import app; "
+         "from fastapi.testclient import TestClient; from app.main import app; from app.auth import require_owner; "
+         "app.dependency_overrides[require_owner]=lambda: 'test'; "
          "r=TestClient(app,raise_server_exceptions=False).get('/api/datasets/demo'); "
          "assert r.status_code==200, r.status_code; assert r.json()['row_count']==42"],
         cwd=Path(__file__).parents[1],

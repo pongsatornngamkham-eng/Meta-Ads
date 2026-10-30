@@ -1,8 +1,11 @@
 # Adscope — Meta Ads Analytics Dashboard
 
-Dashboard รุ่น CSV-only สำหรับวิเคราะห์ผลโฆษณา ด้วย Next.js + TypeScript,
+Dashboard ส่วนตัว รองรับ CSV, ข้อมูลจำลอง และข้อมูลบัญชีจาก Make ด้วย Next.js + TypeScript,
 FastAPI และ PostgreSQL รองรับ UI ภาษาไทย ไม่มีการสร้าง/แก้ไข/หยุดแคมเปญ
-และไม่ต้องมี Meta credentials ข้อมูลเริ่มต้นทุกตัวเป็น **ข้อมูลจำลอง**
+และไม่ต้องนำ Meta credentials ขึ้นเว็บ ข้อมูล demo ทุกตัวเป็น **ข้อมูลจำลอง**
+
+รุ่นออนไลน์มี login เจ้าของคนเดียวและช่องรับข้อมูล Make ที่ป้องกันด้วยรหัสลับ
+ดู [คู่มือติดตั้งออนไลน์และ mapping Make](docs/ONLINE_DASHBOARD.md) ยังไม่ได้ deploy บริการให้โดยอัตโนมัติ
 
 ## เริ่มระบบ
 
@@ -16,6 +19,7 @@ cp .env.example .env  # ทำเฉพาะเมื่อยังไม่�
 # ค่า DATABASE_URL เริ่มต้นตรงกับฐานข้อมูล local ด้านล่าง
 
 docker compose up -d db
+python3 setup_dashboard.py  # ตั้ง login; local URL ใช้ http://localhost:3000
 cd backend
 UV_CACHE_DIR=/tmp/meta-ads-uv-cache uv sync --frozen
 .venv/bin/python -c 'from app.storage import initialize; initialize()'
@@ -31,11 +35,13 @@ npm run dev
 ```
 
 เปิดพอร์ต **3000** ด้วยเครื่องมือเข้าถึงพอร์ตของสภาพแวดล้อมที่ใช้งาน หรือ
-เปิดใน browser บนเครื่องที่รันระบบ หน้าแรกแสดงชุด demo โดยไม่ต้องเชื่อม Meta
+เปิดใน browser บนเครื่องที่รันระบบ ต้องเข้าสู่ระบบด้วยบัญชีที่ตั้งไว้ก่อน ไม่ต้องเชื่อม Meta
+ถ้าตั้ง Make feed แล้วแต่ยังไม่ได้ส่งข้อมูลจะแสดงหน้ารอ เลือกแท็บข้อมูลจำลองเพื่อดู demo
 การเรียก backend ผ่าน Next.js rewrite `/api/*` จึงไม่ส่ง token ไป browser
 หากเปลี่ยนค่า BACKEND_URL ให้ส่งเป็น environment variable ก่อนเริ่ม Next.js
 
-หากตั้ง DATABASE_URL เอง ให้ export เข้า process Python ก่อน init และ startup
+Python อ่านค่าจาก process environment ก่อน แล้วจึงอ่าน .env ที่รากโปรเจกต์
+เมื่อทดสอบ login ในเครื่องต้องใช้ URL ตรงกับ PUBLIC_ORIGIN ทุกตัว รวม localhost/127.0.0.1 และพอร์ต
 `META_ACCESS_TOKEN` ห้ามมี prefix `NEXT_PUBLIC_` และไม่จำเป็นสำหรับรุ่นนี้
 `.env.example` เป็นตัวอย่างเท่านั้น; ไม่ใส่ secret จริงใน Git
 
@@ -58,7 +64,7 @@ npm run start
 - แต่ละ import เป็นคนละ dataset ไม่รวมหลายไฟล์โดยอัตโนมัติ
 - ไฟล์ตัวอย่างมี `data_source=mock` จึงยังติดป้ายจำลองแม้นำเข้าผ่าน UI
 - รายงาน `.txt` ภาษาไทยสร้างจากค่าจริงบนหน้า ณ ขณะนั้น ไม่ส่งข้อมูลให้ LLM ภายนอก
-- รีเฟรชหน้าเริ่มที่ demo เสมอ; dataset ที่นำเข้าเก็บใน PostgreSQL
+- รีเฟรชหน้าเริ่มที่ Make ถ้าตั้ง feed ไว้ มิฉะนั้นเริ่ม demo; dataset ที่นำเข้าเก็บใน PostgreSQL
   และอ่านกลับผ่าน `GET /api/datasets/{id}` ได้ แต่ยังไม่มีหน้า browsing ประวัติ
 
 ## รูปแบบ CSV
@@ -104,7 +110,11 @@ backend/app/ingestion.py อ่านและตรวจ CSV
 backend/app/domain.py    สูตรและรายงานภาษาไทยแบบ deterministic
 backend/app/storage.py   PostgreSQL persistence
 backend/app/main.py      FastAPI routes
-backend/app/meta.py      Connector boundary ที่ปิดถาวรในรุ่น CSV-only
+backend/app/meta.py      GET-only Meta reader / worker แยกจากหน้าเว็บ
+backend/app/auth.py      บัญชีเจ้าของและ server-side sessions
+backend/app/live_*.py    รับ/เก็บ/คำนวณ snapshot Make แยกชั้น
+setup_dashboard.py      เครื่องมือตั้ง login และ ingest token บนเครื่องเจ้าของ
+Dockerfile              Online web container + private FastAPI
 backend/tests/           Unit, CSV และ PostgreSQL integration tests
 fixtures/               ข้อมูลจำลองแบบ reproducible
 scripts/                Browser smoke test
@@ -126,7 +136,8 @@ npm run build
 Browser smoke test ใช้ Python Playwright และ Chromium ที่ติดตั้งไว้ใน environment:
 
 ```bash
-# เริ่มทั้ง backend/frontend ก่อน
+# เริ่มทั้ง backend/frontend ใน local-only test mode ก่อน
+# DASHBOARD_LOCAL_MODE=true เฉพาะ backend ที่ bind loopback; ห้ามใช้บนโฮสต์ออนไลน์
 python3 scripts/browser_smoke.py
 python3 scripts/import_smoke.py
 ```
@@ -136,7 +147,8 @@ python3 scripts/import_smoke.py
 
 ## Meta API และรายงาน Telegram
 
-หน้า Dashboard ยังใช้ CSV/mock ตามเดิม มี CLI แยกสำหรับทดลองอ่าน Meta จริง
+หน้า Dashboard รับข้อมูล Make ได้ตามคู่มือออนไลน์ และยังใช้ CSV/mock ได้
+มี CLI แยกสำหรับทดลองอ่าน Meta จริง
 และ worker ส่งรายงาน Telegram ทุก 3 ชั่วโมง โดยทุก flag อัตโนมัติเริ่มต้นเป็น false
 ไม่มีงานตามเวลาที่เริ่มจากการเปิดเว็บหรือ FastAPI และไม่มีการแก้ไขแคมเปญ
 
@@ -148,11 +160,12 @@ Telegram ปลายทาง และนโยบายที่ยังค�
 
 ทดสอบโค้ดด้วย mocked HTTP และ PostgreSQL ในเครื่องพัฒนาได้
 แต่ยังต้องทดสอบ worker ใหม่ด้วย credentials จริงบนเครื่องผู้ใช้ก่อนอ้างว่าพร้อม
-ยังไม่มี live Meta data view บนหน้า Dashboard, แหล่ง website-confirmed registrations
-สำหรับ worker, Windows service หรือ hosted server ที่รับประกัน uptime
+ข้อมูล Make บนหน้าเว็บยังเป็นยอดรวมบัญชี ไม่มีรายละเอียดแคมเปญหรือแหล่ง website-confirmed registrations
+สำหรับ worker ยังไม่มี Windows service หรือ hosted server ที่รับประกัน uptime
 
 Marketing API v26.0 ปรากฏในเอกสารทางการที่อ่านวันที่ 30 ต.ค. 2026
 ต้องตรวจ support อีกครั้งในวันที่เปิดใช้งานจริง
 ดู [นโยบายและข้อจำกัด](docs/POLICY_REVIEW.md),
 [การตั้งค่า Meta/Telegram](docs/API_TELEGRAM_SETUP.md) และ [คู่มือความปลอดภัย](docs/SECURITY.md)
-หน้าเว็บยังไม่มี authentication / tenant isolation จึงห้ามเปิดสาธารณะหรือใช้กับข้อมูลส่วนบุคคล
+หน้าเว็บมี authentication สำหรับเจ้าของคนเดียว ไม่มี tenant isolation สำหรับหลายองค์กร
+ต้องตั้ง HTTPS, secrets และ backup ตามคู่มือออนไลน์ก่อน deploy และห้ามใส่ข้อมูลส่วนบุคคลใน CSV

@@ -2,8 +2,8 @@
 
 ## ขอบเขตเวอร์ชันแรก
 
-Local development / CSV-only ไม่มี authentication, authorization หรือ tenant
-isolation อย่าเปิดให้สาธารณะและอย่าใส่ข้อมูลส่วนบุคคล ฐานข้อมูล Docker bind
+มี authentication เจ้าของคนเดียวและช่องรับ Make ด้วยรหัสลับแยก ไม่มี tenant
+isolation สำหรับหลายองค์กร อย่าใส่ข้อมูลส่วนบุคคล ฐานข้อมูล Docker bind
 เฉพาะ 127.0.0.1 ค่า password ใน compose เป็นค่า local ตัวอย่าง ไม่ใช่ production secret
 
 ## Secrets
@@ -31,9 +31,12 @@ SQLAlchemy ใช้ parameterized statements; เก็บชุดข้อม
 
 ## ก่อน deployment
 
-ต้องเพิ่ม login, ownership/tenant authorization, CSRF/origin protection สำหรับ
-cookie sessions, TLS, rate limiting, upload limits ที่ reverse proxy, backup,
-retention/deletion policy และ secrets rotation ก่อนเปิดบริการสาธารณะ
+มี scrypt password, server-side session 12h, cookie HttpOnly/SameSite Strict/Secure บน HTTPS,
+CSRF Origin check และ login lock หลังผิด 5 ครั้ง/5 นาที
+ยังต้องตั้ง TLS, upload limits ที่ reverse proxy, backup/restore,
+retention/deletion policy และ secrets rotation ก่อนเปิดบริการจริง
+DASHBOARD_LOCAL_MODE=true ใช้เฉพาะเครื่องพัฒนาที่ bind loopback; container ออนไลน์ปฏิเสธ flag นี้
+ดู [คู่มือออนไลน์](ONLINE_DASHBOARD.md) สำหรับ secret และ Make mapping
 dataset ID ไม่ใช่ credential และห้ามใช้แทน access control
 กำหนด allowed origins/hosts เฉพาะ deployment; อย่าเปิด debug logs
 อย่าส่ง traceback, DSN หรือ upstream error body กลับ client
