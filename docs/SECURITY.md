@@ -12,8 +12,12 @@ isolation อย่าเปิดให้สาธารณะและอย�
 - `.env*` ที่มี secret ต้องไม่อยู่ใน Git; `.env.example` เท่านั้นที่เผยแพร่ได้
 - ใช้ server environment หรือ secret manager เมื่อพัฒนา connector จริง
 - ห้ามใส่ token ใน URL/query string, exception, access log, telemetry หรือ CSV
-- ปัจจุบันไม่มี network request ไป Meta และ `META_CONNECTOR_ENABLED` ไม่สามารถ
-  เปิด adapter ได้; เป็นสถานะปิดถาวรของรุ่นนี้ ไม่อ้างว่า OAuth ทำงานแล้ว
+- มี GET-only diagnostic reader และ worker แยกจากหน้าเว็บ โดย default ปิดอัตโนมัติ
+  ต้องยืนยัน production/policy/expiry/attribution ก่อนเปิด worker ไม่อ้างว่า OAuth ทำงานแล้ว
+- Meta token อยู่ใน Authorization header ไม่ใส่ query string; ปิด HTTP debug logging
+  Telegram token จำเป็นต้องอยู่ใน path ตาม Bot API จึงตัด URL/raw exceptions ออกจาก error output
+- Telegram ส่งเฉพาะบอตและ private chat ID ที่ยืนยันใน configuration ไม่มี retry POST
+  เมื่อการส่งไม่แน่ชัด; เก็บ claim ถาวรใน DB เพื่อไม่ส่งซ้ำโดยไม่รู้ตัว
 
 ## CSV และฐานข้อมูล
 
@@ -35,7 +39,7 @@ dataset ID ไม่ใช่ credential และห้ามใช้แทน
 อย่าส่ง traceback, DSN หรือ upstream error body กลับ client
 ทดสอบ dependency updates และตรึง lockfile เมื่อติดตั้ง
 
-## เมื่อทำ Meta connector จริง
+## Meta connector และ worker
 
 ใช้ `ads_read` ตามสิทธิ์อนุมัติเท่านั้น จำกัดปลายทาง Graph API ฝั่ง server
 และสร้าง URL จาก host/version/account ที่ตรวจสอบแล้ว ไม่ follow `paging.next`
@@ -45,3 +49,5 @@ dataset ID ไม่ใช่ credential และห้ามใช้แทน
 ทำ bounded exponential backoff สำหรับ rate limit; ไม่ retry authorization
 errors แบบไม่สิ้นสุด แสดง failed/partial/freshness โดยไม่อ้างว่าเป็นชุดครบ
 ไม่มี mutation endpoints และห้ามเพิ่ม `ads_management` โดยไม่จำเป็น
+
+ดูการตั้งค่า สถานะ delivery_unknown/running และขอบเขตที่ยังไม่รองรับใน [REPORTING.md](REPORTING.md)

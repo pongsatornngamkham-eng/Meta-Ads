@@ -134,16 +134,25 @@ python3 scripts/import_smoke.py
 รันใน cloud task ที่ isolated อยู่แล้ว ใช้ checkout ปัจจุบัน ไม่ต้องสร้าง Git worktree
 กระบวนการ server ต้องเริ่มใหม่เมื่อย้าย task; live processes ไม่ใช่ส่วนของไฟล์โปรเจกต์
 
-## Meta API และความพร้อมใช้งาน
+## Meta API และรายงาน Telegram
 
-ยังไม่มี connector เรียก API จริง `fetch_insights()` ปฏิเสธทุกครั้ง แม้ตั้ง
-`META_CONNECTOR_ENABLED=true` ไม่มี OAuth flow หรือสิทธิ์บัญชีที่สมมติขึ้น
-ก่อนพัฒนาหรือเปิดใช้งานจริงต้องตรวจนโยบาย/กฎหมายให้ครบ ยืนยัน `ads_read`,
-App Review และสิทธิ์บัญชี แล้วเพิ่ม pagination, safe cursor handling,
-error sanitization, rate-limit backoff และ partial-data reporting พร้อม tests
-Marketing API v26.0 ปรากฏใน changelog ทางการที่อ่านวันที่ 29 ต.ค. 2026
-ต้องตรวจ support ใหม่ในวันที่เชื่อมจริง ไม่ใช้เวอร์ชันที่เคยแนะนำแบบถาวร
+หน้า Dashboard ยังใช้ CSV/mock ตามเดิม มี CLI แยกสำหรับทดลองอ่าน Meta จริง
+และ worker ส่งรายงาน Telegram ทุก 3 ชั่วโมง โดยทุก flag อัตโนมัติเริ่มต้นเป็น false
+ไม่มีงานตามเวลาที่เริ่มจากการเปิดเว็บหรือ FastAPI และไม่มีการแก้ไขแคมเปญ
 
-ดู [นโยบายและข้อจำกัด](docs/POLICY_REVIEW.md) และ [คู่มือความปลอดภัย](docs/SECURITY.md)
-รุ่นนี้เป็น local development demo; ยังไม่มี authentication / tenant isolation
-จึงห้ามเปิดเป็นบริการสาธารณะหรือใช้กับข้อมูลส่วนบุคคล
+ดู [วิธีทดลอง preview และเงื่อนไขก่อนเปิด worker](docs/REPORTING.md)
+`--preview` เป็นการทดสอบอ่านด้วยตนเอง ไม่ส่ง Telegram ไม่เขียน DB และไม่เปิด timer
+production worker จะปิดกั้นจนกว่าสิทธิ์ production, อายุ token, attribution,
+Telegram ปลายทาง และนโยบายที่ยังค้างได้รับการตรวจและยืนยันแล้ว
+การตั้ง flag ไม่ใช่การอัปเกรดสิทธิ์ Meta หรือหลักฐานว่า API/worker ทำงานจริง
+
+ทดสอบโค้ดด้วย mocked HTTP และ PostgreSQL ในเครื่องพัฒนาได้
+แต่ยังต้องทดสอบ worker ใหม่ด้วย credentials จริงบนเครื่องผู้ใช้ก่อนอ้างว่าพร้อม
+ยังไม่มี live Meta data view บนหน้า Dashboard, แหล่ง website-confirmed registrations
+สำหรับ worker, Windows service หรือ hosted server ที่รับประกัน uptime
+
+Marketing API v26.0 ปรากฏในเอกสารทางการที่อ่านวันที่ 30 ต.ค. 2026
+ต้องตรวจ support อีกครั้งในวันที่เปิดใช้งานจริง
+ดู [นโยบายและข้อจำกัด](docs/POLICY_REVIEW.md),
+[การตั้งค่า Meta/Telegram](docs/API_TELEGRAM_SETUP.md) และ [คู่มือความปลอดภัย](docs/SECURITY.md)
+หน้าเว็บยังไม่มี authentication / tenant isolation จึงห้ามเปิดสาธารณะหรือใช้กับข้อมูลส่วนบุคคล

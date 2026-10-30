@@ -17,7 +17,7 @@ def test_demo_and_filters():
     assert client.get('/api/datasets/demo?start=2030-01-01').json()['row_count']==0
     assert client.get('/api/datasets/demo?start=2026-10-20&end=2026-10-12').status_code==422
 
-def test_connector_never_enabled(monkeypatch):
+def test_connector_remains_disabled_without_readiness(monkeypatch):
     monkeypatch.setenv('META_CONNECTOR_ENABLED','true')
     monkeypatch.setenv('META_ACCESS_TOKEN','TEST_SECRET_MUST_NOT_LEAK')
     r=client.get('/api/connector')

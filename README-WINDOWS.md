@@ -115,3 +115,17 @@ py .\setup_telegram.py
 ZIP ไม่รวม node_modules, Python virtual environment, .git, .env จริง หรือฐานข้อมูล
 การติดตั้งครั้งแรกจึงต้องต่ออินเทอร์เน็ต ไม่มีการ push โค้ดหรือ publish environment
 จากการจัดทำ ZIP นี้
+
+## ทดลองอ่าน Meta และเตรียม worker รายงาน
+
+ดู `docs/REPORTING.md` สำหรับรายละเอียดและข้อกำหนดที่ยังไม่ครบ
+ในโฟลเดอร์ backend หลังใช้โค้ดล่าสุดและคง .env เดิมไว้:
+
+```powershell
+py -m uv sync --frozen
+.\.venv\Scripts\python.exe -m app.reporting --preview
+```
+
+preview อ่าน Meta แล้วแสดงรายงานใน terminal เท่านั้น ไม่ส่ง Telegram ไม่บันทึก
+DB และไม่เปิด timer ให้คง flags อัตโนมัติเป็น false จนกว่าข้อกำหนดครบ
+worker ยังไม่ได้เปิดใช้งานจริงบนเครื่องผู้ใช้จากการเพิ่มโค้ดนี้
