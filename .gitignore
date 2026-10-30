@@ -8,3 +8,7 @@ __pycache__/
 *.log
 artifacts/*.json
 *.tsbuildinfo
+
+# Local credentials and atomic setup temporary files
+.env.*
+!.env.example

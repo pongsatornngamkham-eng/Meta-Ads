@@ -48,6 +48,40 @@ Telegram Bot API ใส่ bot token ใน URL path จึงต้องปิ
 tracebacks และ proxy/access logs ของการส่งข้อความ ไม่ส่ง token ไป browser
 และไม่ให้ผู้ใช้เปิด URL ที่ใส่ token ใน browser เพื่อหลีกเลี่ยงการค้างใน history
 
+### เครื่องมือตั้งค่าบน Windows สำหรับ @Adscopefatherbot
+
+มีไฟล์ [setup_telegram.py](../setup_telegram.py) สำหรับตั้งค่าและส่งข้อความทดสอบ
+ใช้ Python มาตรฐาน ไม่ต้องติดตั้ง package เพิ่ม และไม่ต้องเปิด Dashboard
+
+1. วาง `setup_telegram.py` ในโฟลเดอร์โปรเจกต์ที่มี `backend` และ `frontend`
+   หากดาวน์โหลดเฉพาะไฟล์จาก GitHub ให้ใช้ Download raw file ไม่บันทึกหน้า HTML
+2. เปิดแชตกับ `@Adscopefatherbot` ใน Telegram แล้วส่ง `/start`
+3. เปิด PowerShell ในโฟลเดอร์โปรเจกต์ แล้วรัน:
+
+   ```powershell
+   py .\setup_telegram.py
+   ```
+
+4. เมื่อขึ้น `Bot token (hidden):` ให้วาง token ที่ BotFather ให้มาบนเครื่องตัวเอง
+   อักขระจะไม่แสดงบนหน้าจอ เป็นการทำงานปกติ จากนั้นกด Enter
+5. เครื่องมือตรวจว่า token เป็นของ `@Adscopefatherbot` แล้วแสดงรายการแชตส่วนตัว
+   ตรวจชื่อ/username แล้วกรอกหมายเลขลำดับของแชตตัวเอง เช่น `1`
+6. เครื่องมือยืนยันปลายทางกับ Telegram และบันทึกค่า `TELEGRAM_BOT_TOKEN`,
+   `TELEGRAM_CHAT_ID`, `TELEGRAM_BOT_USERNAME` ใน `.env` บนเครื่องนี้
+   เก็บค่าอื่นไว้เดิม และถามก่อนแทนที่ Telegram settings ที่มีอยู่แล้ว
+7. ที่คำถาม `Send one test message ... [y/N]:` พิมพ์ `y` แล้วกด Enter
+8. ตรวจข้อความทดสอบในแชตของคุณ ไม่ส่ง token หรือ `.env` กลับมาในแชตช่วยเหลือ
+
+เครื่องมือรับเฉพาะแชตส่วนตัว ไม่เลือก group/channel ไม่อ่านหรือแสดงเนื้อหา
+ข้อความในแชต และไม่ส่งไปปลายทางจนกว่าผู้ใช้ยืนยันใน terminal
+หากมี webhook หรือ consumer อื่นชนกันจะหยุดพร้อมข้อความอธิบาย ไม่ลบ webhook เอง
+หากไม่พบแชต ให้ส่ง `/start` อีกครั้งแล้วรันเครื่องมือใหม่
+
+การบันทึก `.env` ไม่ได้เปลี่ยน environment ของ process ที่เปิดอยู่แล้ว
+**เครื่องมือนี้ยังไม่เชื่อม Meta API และไม่เปิด scheduler ทุก 3 ชั่วโมง**
+ทดสอบโค้ดด้วย Telegram responses จำลองแล้ว แต่การยืนยัน token/ปลายทาง
+และการส่งข้อความจริงต้องเกิดบนเครื่องผู้ใช้ที่มีข้อมูลลับเท่านั้น
+
 ## เครื่องที่รันต่อเนื่อง
 
 ทางเลือกแรกคือ Windows เครื่องปัจจุบัน: ต้องเปิดเครื่อง ต่ออินเทอร์เน็ต
